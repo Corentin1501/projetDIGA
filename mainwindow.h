@@ -1,10 +1,7 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
+#pragma once
 #include <QMainWindow>
 #include <QApplication>
 #include <QFileDialog>
-
 #include <QtWidgets>
 #include <QLayout>
 
@@ -24,6 +21,14 @@ public slots:
     void loadGame();
     void saveGame();
 
+    void aboutQt();
+    void aboutTaquin();
+
+    void setBackgroundOriginal();
+    void setBackgroundForest();
+    void setBackgroundTree();
+    void setBackgroundNetwork();
+
 private:
     static const int DEFAULT_WIDTH=400;
     static const int DEFAULT_HEIGHT=400;
@@ -33,32 +38,32 @@ private:
     void createMenu();
     void createToolBar();
 
+    //### Actions ###
+        QAction *_newGameAction;
+        QAction *_loadGameAction;
+        QAction *_saveGameAction;
+        QAction *_quitAction;
 
-    QAction *_newGameAction;
-    QAction *_loadGameAction;
-    QAction *_saveGameAction;
-    QAction *_quitAction;
+        QAction *_originalBackgroundAction;
+        QAction *_forestBackgroundAction;
+        QAction *_treeBackgroundAction;
+        QAction *_networkBackgroundAction;
 
-    QAction *_originalBackgroundAction;
-    QAction *_forestBackgroundAction;
-    QAction *_treeBackgroundAction;
-    QAction *_networkBackgroundAction;
+        QAction *_aboutQt;
+        QAction *_aboutTaquin;
 
-    QAction *_aboutQt;
-    QAction *_aboutTaquin;
+    //### Jeu ###
+        GameWidget *_GameWidget;
+        std::string _background;
 
-//    QHBoxLayout* _layoutH;
-    GameWidget *_GameWidget;
-//    QVBoxLayout* _sideButtons;
-    QPushButton* _newGameButton;
-    QPushButton* _loadGameButton;
-    QPushButton* _saveGameButton;
-    int _moves;
-    QLabel * _labelMoves;
+    //### ToolBar ###
+        QPushButton* _newGameButton;
+        QPushButton* _loadGameButton;
+        QPushButton* _saveGameButton;
+        int _moves;
+        QLabel * _labelMoves;
 
-    QToolBar* _toolBar;
+        QToolBar* _toolBar;
 
 
 };
-
-#endif // MAINWINDOW_H

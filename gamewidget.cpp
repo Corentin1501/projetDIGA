@@ -1,14 +1,15 @@
 #include "gamewidget.h"
 
 #include <iostream>
+#include <algorithm>
 
 //####################################################
 //            Constructeur / destructeur            //
 //####################################################
 
-    GameWidget::GameWidget(QWidget *parent, int largeur) :
+    GameWidget::GameWidget(QWidget *parent, int largeur, std::string bg) :
         QWidget(parent),
-        _background(nullptr),
+        _background(bg),
         _largeurGrille(largeur),
         _positionTrou(new QPoint(largeur-1,largeur-1))
     {
@@ -27,33 +28,62 @@
         QGridLayout* grille = new QGridLayout;
         int valeurDuBouton(0);
 
-        if(_background == nullptr)
+        QImage image;
+        if(_background == "forest") image = QImage("foret.jpg");
+        else if(_background == "tree") image = QImage("arbee.jpg");
+        else if(_background == "network") image = QImage("reseau.jpeg");
+
+        int width = image.width() / 3;
+        int height = image.height() / 3;
+
+        for (int i = 0; i < largeur; ++i)
         {
-            for (int i = 0; i < largeur; ++i)
+            for (int j = 0; j < largeur; ++j)
             {
-                for (int j = 0; j < largeur; ++j)
+                valeurDuBouton++;
+                if(valeurDuBouton != largeur*largeur)
                 {
-                    valeurDuBouton++;
-                    if(valeurDuBouton != largeur*largeur)
+                    QPushButton *button = new QPushButton(QString::number(valeurDuBouton));
+
+                    connect(button, &QPushButton::clicked, this, &GameWidget::boutonClique);
+                    button->setStyleSheet("font:Bold; font-size:20px;");
+
+                    if(image.isNull()) // si le background est "original"
                     {
-                        QPushButton *button = new QPushButton(QString::number(valeurDuBouton));
-                        button->resize(100,100);
-
-                        connect(button, &QPushButton::clicked, this, &GameWidget::boutonClique);
-                        grille->addWidget(button, i, j);
                         button->setStyleSheet("background-color: red; font:Bold; font-size:20px;");
-                        button->setMinimumSize(100,100);
-                        _vectorBoutons.push_back(button);
-                        button->setEnabled(false);
-
-
-
-                        if(((i == largeur-2) && (j==largeur-1)) || ((i == largeur-1) && (j==largeur-2)))
-                            button->setEnabled(true);
                     }
+                    else
+                    {
+                        button->setIcon(QPixmap::fromImage(image.copy(j*width, i*height, width, height)));
+                        button->setIconSize(QSize(width, height));
+                    }
+
+                    button->setMinimumSize(100,100);
+                    button->setEnabled(false);
+                    _vectorBoutons.push_back(button);
+
                 }
             }
         }
+
+        std::random_shuffle(_vectorBoutons.begin(), _vectorBoutons.end());
+
+        int k = 0;
+        for (int i = 0; i < largeur; ++i) {
+            for (int j = 0; j < largeur; ++j) {
+                if((i+1)*(j+1) != largeur*largeur)
+                {
+                    if(((i == largeur-2) && (j==largeur-1)) || ((i == largeur-1) && (j==largeur-2)))
+                    {
+                        _vectorBoutons[k]->setEnabled(true);
+                        _vectorBoutonsPossibles.push_back(_vectorBoutons[k]);
+                    }
+                    grille->addWidget(_vectorBoutons[k++], i, j);
+                }
+            }
+        }
+
+
         return grille;
     }
 
@@ -70,8 +100,39 @@
 
             echanger(boutonSender, _positionTrou);      // changement de place du bouton et du trou
 
+            int x(_positionTrou->x());
+            int y(_positionTrou->y());
 
+            for(auto bouton : _vectorBoutonsPossibles)  // desactivation des boutons autour de l'ancien trou
+            {
+                bouton->setEnabled(false);
+            }
 
+            // activation des boutons autour du nouveau trou
+            if (x-1 >= 0)
+            {
+                QPushButton* bouton1 = qobject_cast<QPushButton*>(_grille->itemAtPosition(x-1,y)->widget());
+                bouton1->setEnabled(true);
+                _vectorBoutonsPossibles.push_back(bouton1);
+            }
+            if (x+1 <= _largeurGrille-1)
+            {
+                QPushButton* bouton2 = qobject_cast<QPushButton*>(_grille->itemAtPosition(x+1,y)->widget());
+                bouton2->setEnabled(true);
+                _vectorBoutonsPossibles.push_back(bouton2);
+            }
+            if (y-1 >= 0)
+            {
+                QPushButton* bouton3 = qobject_cast<QPushButton*>(_grille->itemAtPosition(x,y-1)->widget());
+                bouton3->setEnabled(true);
+                _vectorBoutonsPossibles.push_back(bouton3);
+            }
+            if (y+1 <= _largeurGrille-1)
+            {
+                QPushButton* bouton4 = qobject_cast<QPushButton*>(_grille->itemAtPosition(x,y+1)->widget());
+                bouton4->setEnabled(true);
+                _vectorBoutonsPossibles.push_back(bouton4);
+            }
         }
     }
 

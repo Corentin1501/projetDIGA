@@ -1,8 +1,7 @@
-#ifndef GameWidget_H
-#define GameWidget_H
-
+#pragma once
 #include <QtWidgets>
 #include <vector>
+#include <iostream>
 
 #include "dialognewgame.h"
 
@@ -12,7 +11,7 @@ class GameWidget : public QWidget
 {
     Q_OBJECT
 public:
-    GameWidget(QWidget *parent = nullptr, int largeur=3);
+    GameWidget(QWidget *parent = nullptr, int largeur=3, std::string bg="tree");
     ~GameWidget();
 
 public slots:
@@ -29,13 +28,11 @@ private:
     QGridLayout * creerGrille(int largeur);
     void echanger(QPushButton * bouton, QPoint * trou);
 
-    QImage * _background;
-    int _largeurGrille;
-    QGridLayout* _grille;
+    std::string     _background;
+    int             _largeurGrille;
+    QGridLayout*    _grille;
 
     vector<QPushButton*> _vectorBoutons;
     vector<QPushButton*> _vectorBoutonsPossibles;
     QPoint* _positionTrou;
 };
-
-#endif // GameWidget_H
