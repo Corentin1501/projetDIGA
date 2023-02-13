@@ -10,50 +10,13 @@
         QWidget(parent),
         _background(nullptr),
         _largeurGrille(largeur),
-        _grille(nullptr)
-//        _sideButtons(nullptr)
+        _positionTrou(new QPoint(largeur-1,largeur-1))
     {
-//        _layoutH = new QHBoxLayout;
-
-
         _grille = creerGrille(_largeurGrille);
-
         this->setLayout(_grille);
-//        _layoutH->addLayout(_grille);
-
-//        _sideButtons = createSideButton();
-//        _layoutH->addLayout(_sideButtons);
     }
 
     GameWidget::~GameWidget() {}
-
-
-//####################################################
-//              New / Load / Save Game              //
-//####################################################
-
-//    void GameWidget::newGame()
-//    {
-//        DialogNewGame * dialog = new DialogNewGame();
-
-//        auto ok = dialog->exec();
-
-//        if (ok)
-//        {
-//            _grille = creerGrille(dialog->getLargeur());
-//            _moves = DEFAULT_MOVES;
-//        }
-//    }
-
-//    void GameWidget::loadGame()
-//    {
-//    //    QString filename = QFileDialog::getOpenFileName(this, tr("Load a game ..."), QString(), tr("Saves files (*.save)"));
-
-//    }
-
-//    void GameWidget::saveGame(){
-
-//    }
 
 //####################################################
 //            Creer gridlayout de boutons           //
@@ -64,17 +27,29 @@
         QGridLayout* grille = new QGridLayout;
         int valeurDuBouton(0);
 
-        if(_background == nullptr){
-            for (int i = 0; i < largeur; ++i) {
-                for (int j = 0; j < largeur; ++j) {
+        if(_background == nullptr)
+        {
+            for (int i = 0; i < largeur; ++i)
+            {
+                for (int j = 0; j < largeur; ++j)
+                {
                     valeurDuBouton++;
-                    if(valeurDuBouton != largeur*largeur){
+                    if(valeurDuBouton != largeur*largeur)
+                    {
                         QPushButton *button = new QPushButton(QString::number(valeurDuBouton));
                         button->resize(100,100);
 
                         connect(button, &QPushButton::clicked, this, &GameWidget::boutonClique);
                         grille->addWidget(button, i, j);
-                        button->setStyleSheet("background-color: blue;");
+                        button->setStyleSheet("background-color: red; font:Bold; font-size:20px;");
+                        button->setMinimumSize(100,100);
+                        _vectorBoutons.push_back(button);
+                        button->setEnabled(false);
+
+
+
+                        if(((i == largeur-2) && (j==largeur-1)) || ((i == largeur-1) && (j==largeur-2)))
+                            button->setEnabled(true);
                     }
                 }
             }
@@ -83,35 +58,41 @@
     }
 
 //####################################################
-//              Creer boutons lateraux              //
+//                  Clic des boutons                //
 //####################################################
 
-//    QVBoxLayout* GameWidget::createSideButton(){
-//        QVBoxLayout* layout = new QVBoxLayout;
+    void GameWidget::boutonClique(bool)
+    {
+        if(QObject::sender() != nullptr)
+        {
 
-//        _newGame = new QPushButton(tr("New game"));
-//        connect(_newGame, &QPushButton::clicked, this, &GameWidget::newGame);
-//        layout->addWidget(_newGame);
-//        _loadGame = new QPushButton(tr("Load game"));
-//        connect(_loadGame, &QPushButton::clicked, this, &GameWidget::loadGame);
-//        layout->addWidget(_loadGame);
-//        _saveGame = new QPushButton(tr("Save game"));
-//        connect(_saveGame, &QPushButton::clicked, this, &GameWidget::saveGame);
-//        layout->addWidget(_saveGame);
+            QPushButton * boutonSender = qobject_cast<QPushButton*>(QObject::sender()); // Identification du bouton
 
-//        _labelMoves = new QLabel(tr("Number of moves : ") + QString::number(_moves));
-//        layout->addWidget(_labelMoves);
+            echanger(boutonSender, _positionTrou);      // changement de place du bouton et du trou
 
-//        layout->addStretch();
 
-//        return layout;
-//    }
+
+        }
+    }
+
+    void GameWidget::echanger(QPushButton * bouton, QPoint * trou)
+    {
+//        auto boutonItem = _grille->itemAtPosition(x,y);
+        int index = _grille->indexOf(bouton);
+        int row, column;
+        int _;
+        _grille->getItemPosition(index, &row, &column, &_, &_);
+        _grille->removeWidget(bouton);
+        _grille->addWidget(bouton,trou->x(), trou->y());
+
+        trou->setX(row);
+        trou->setY(column);
+    }
 
 //####################################################
 //                Changer arriere plan              //
 //####################################################
 
-    void GameWidget::boutonClique(bool){}
     void GameWidget::setBackgroundOriginal(bool){
         for (int i = 0; i < _largeurGrille; ++i) {
             for (int j = 0; j < _largeurGrille; ++j) {

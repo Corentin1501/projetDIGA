@@ -47,15 +47,14 @@ private:
     QAction *_aboutQt;
     QAction *_aboutTaquin;
 
-    QHBoxLayout* _layoutH;
-    QGridLayout* _grille;
-        GameWidget *_GameWidget;
-    QVBoxLayout* _sideButtons;
-        QPushButton* _newGameButton;
-        QPushButton* _loadGameButton;
-        QPushButton* _saveGameButton;
-        int _moves;
-        QLabel * _labelMoves;
+//    QHBoxLayout* _layoutH;
+    GameWidget *_GameWidget;
+//    QVBoxLayout* _sideButtons;
+    QPushButton* _newGameButton;
+    QPushButton* _loadGameButton;
+    QPushButton* _saveGameButton;
+    int _moves;
+    QLabel * _labelMoves;
 
     QToolBar* _toolBar;
 

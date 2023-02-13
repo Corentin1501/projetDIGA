@@ -49,11 +49,11 @@
     {
         DialogNewGame * dialog = new DialogNewGame();
         auto ok = dialog->exec();
-
         if (ok)
         {
-            std::cout<<dialog->getLargeur() << std::endl;
+            _GameWidget->deleteLater();
             _GameWidget = new GameWidget(this,dialog->getLargeur());
+            this->setCentralWidget(_GameWidget);
         }
     }
 

@@ -27,22 +27,15 @@ private slots:
 
 private:
     QGridLayout * creerGrille(int largeur);
-//    QVBoxLayout * createSideButton();
+    void echanger(QPushButton * bouton, QPoint * trou);
 
     QImage * _background;
     int _largeurGrille;
-
-//    QHBoxLayout* _layoutH;
     QGridLayout* _grille;
-//    QVBoxLayout* _sideButtons;
 
-//    QPushButton* _newGame;
-//    QPushButton* _loadGame;
-//    QPushButton* _saveGame;
-
-//    int _moves;
-//    QLabel * _labelMoves;
-
+    vector<QPushButton*> _vectorBoutons;
+    vector<QPushButton*> _vectorBoutonsPossibles;
+    QPoint* _positionTrou;
 };
 
 #endif // GameWidget_H
