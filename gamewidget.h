@@ -7,6 +7,13 @@
 
 using namespace std;
 
+struct bouton {
+    QPushButton* button;
+    int valeurDuBouton;
+    int row;
+    int column;
+};
+
 class GameWidget : public QWidget
 {
     Q_OBJECT

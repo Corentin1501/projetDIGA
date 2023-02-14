@@ -14,6 +14,12 @@
         _positionTrou(new QPoint(largeur-1,largeur-1))
     {
         _grille = creerGrille(_largeurGrille);
+
+        if(_background == "forest") setBackgroundForest();
+        else if(_background == "tree") setBackgroundTree();
+        else if(_background == "network") setBackgroundNetwork();
+        else setBackgroundOriginal();
+
         this->setLayout(_grille);
     }
 
@@ -40,14 +46,6 @@
         QGridLayout* grille = new QGridLayout;
         int valeurDuBouton(0);
 
-        QImage image;
-        if(_background == "forest") image = QImage("foret.jpg");
-        else if(_background == "tree") image = QImage("arbre.jpg");
-        else if(_background == "network") image = QImage("reseau.jpeg");
-
-        int width = image.width() / largeur;
-        int height = image.height() / largeur;
-
         for (int i = 0; i < largeur; ++i)
         {
             for (int j = 0; j < largeur; ++j)
@@ -56,22 +54,12 @@
                 if(valeurDuBouton != largeur*largeur)
                 {
                     QPushButton *button = new QPushButton(QString::number(valeurDuBouton));
-
                     connect(button, &QPushButton::clicked, this, &GameWidget::boutonClique);
 
-                    if(!image.isNull()) // si le background n'est pas "original"
-                    {
-                        button->setIcon(QPixmap::fromImage(image.copy(j*width, i*height, width, height)));
-                        button->setIconSize(QSize(100, 100));
-                    }
-
-                    button->setStyleSheet(QString("background-color: grey;"
-                                                  "font:Bold;"
-                                                  "font-size:20px;"));
+                    button->setStyleSheet(QString("background-color: grey; font:Bold; font-size:20px;"));
                     button->setMinimumSize(100,100);
                     button->setDown(true);
                     _vectorBoutons.push_back(button);
-
                 }
             }
         }
@@ -91,8 +79,6 @@
                 }
             }
         }
-
-
         return grille;
     }
 

@@ -42,6 +42,7 @@
             _GameWidget->deleteLater();
             _GameWidget = new GameWidget(this, dialog->getLargeur(), _background);
             this->setCentralWidget(_GameWidget);
+            adjustSize();
         }
     }
 
@@ -127,6 +128,7 @@
             _GameWidget->deleteLater();
             _GameWidget = new GameWidget(this,grille,largeurPuzzle,trou,vectorBoutons,vectorBoutonsPossibles,_background);
             this->setCentralWidget(_GameWidget);
+            adjustSize();
         }
         else
         {
