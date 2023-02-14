@@ -11,22 +11,27 @@ class GameWidget : public QWidget
 {
     Q_OBJECT
 public:
-    GameWidget(QWidget *parent = nullptr, int largeur=3, std::string bg="tree");
+    GameWidget(QWidget *parent = nullptr, int largeur=3, std::string bg="original");
+    GameWidget(QWidget *parent,
+               QGridLayout* grille,
+               int largeur,
+               QPoint* trou,
+               vector<QPushButton*> boutons,
+               vector<QPushButton*> boutonsPossibles,
+               std::string bg);
     ~GameWidget();
 
 public slots:
-    void setBackgroundOriginal(bool);
-    void setBackgroundForest(bool);
-    void setBackgroundTree(bool);
-    void setBackgroundNetwork(bool);
-
-private slots:
+    void setBackgroundOriginal();
+    void setBackgroundForest();
+    void setBackgroundTree();
+    void setBackgroundNetwork();
     void boutonClique(bool);
-
 
 private:
     QGridLayout * creerGrille(int largeur);
     void echanger(QPushButton * bouton, QPoint * trou);
+    void chargerImage(QImage image);
 
     std::string     _background;
     int             _largeurGrille;

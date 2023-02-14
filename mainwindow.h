@@ -30,8 +30,6 @@ public slots:
     void setBackgroundNetwork();
 
 private:
-    static const int DEFAULT_WIDTH=400;
-    static const int DEFAULT_HEIGHT=400;
     static const int DEFAULT_MOVES = 0;
 
     void createActions();
