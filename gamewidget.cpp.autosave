@@ -1,0 +1,191 @@
+#include "gamewidget.h"
+
+#include <iostream>
+#include <algorithm>
+
+//####################################################
+//            Constructeur / destructeur            //
+//####################################################
+
+    GameWidget::GameWidget(QWidget *parent, int largeur, std::string bg) :
+        QWidget(parent),
+        _background(bg),
+        _largeurGrille(largeur),
+        _positionTrou(new QPoint(largeur-1,largeur-1))
+    {
+        _grille = creerGrille(_largeurGrille);
+
+        if(_background == "forest") setBackgroundForest();
+        else if(_background == "tree") setBackgroundTree();
+        else if(_background == "network") setBackgroundNetwork();
+        else setBackgroundOriginal();
+
+        this->setLayout(_grille);
+    }
+
+    GameWidget::GameWidget(QWidget *parent, QGridLayout* grille, int largeur, QPoint* trou, 
+                           vector<boutonStruct> boutons,vector<boutonStruct> boutonsPossibles,std::string bg):
+        QWidget(parent),
+        _background(bg),
+        _largeurGrille(largeur),
+        _grille(grille),
+        _vectorBoutons(boutons),
+        _vectorBoutonsPossibles(boutonsPossibles),
+        _positionTrou(trou)
+    {
+        this->setLayout(_grille);
+    }
+
+    GameWidget::~GameWidget() {}
+
+//####################################################
+//            Creer gridlayout de boutons           //
+//####################################################
+
+    QGridLayout* GameWidget::creerGrille(int largeur)
+    {
+        QGridLayout* grille = new QGridLayout;
+        int valeurDuBouton(0);
+
+        for (int i = 0; i < largeur; ++i)
+        {
+            for (int j = 0; j < largeur; ++j)
+            {
+                valeurDuBouton++;
+                if(valeurDuBouton != largeur*largeur)
+                {
+                    boutonStruct newButton;
+                    newButton.button = new QPushButton(QString::number(valeurDuBouton));
+                    newButton.valeurDuBouton = valeurDuBouton;
+                    connect(newButton.button, &QPushButton::clicked, this, &GameWidget::boutonClique);
+
+                    newButton.button->setStyleSheet(QString("background-color: grey; font:Bold; font-size:20px;"));
+                    newButton.button->setMinimumSize(100,100);
+                    newButton.button->setDown(true);
+                    _vectorBoutons.push_back(newButton);
+                }
+            }
+        }
+
+        std::random_shuffle(_vectorBoutons.begin(), _vectorBoutons.end());
+
+        int k = 0;
+        for (int i = 0; i < largeur; ++i) {
+            for (int j = 0; j < largeur; ++j) {
+                if((i+1)*(j+1) != largeur*largeur)
+                {
+                    if(((i == largeur-2) && (j==largeur-1)) || ((i == largeur-1) && (j==largeur-2)))
+                    {
+                        _vectorBoutonsPossibles.push_back(_vectorBoutons[k]);
+                    }
+                    grille->addWidget(_vectorBoutons[k++].button, i, j);
+                }
+            }
+        }
+        return grille;
+    }
+
+//####################################################
+//                  Clic des boutons                //
+//####################################################
+
+    void GameWidget::boutonClique(bool)
+    {
+        if(QObject::sender() != nullptr)
+        {
+            boutonStruct newButtonSender;
+            newButtonSender.button = qobject_cast<QPushButton*>(QObject::sender()); // Identification du bouton
+
+            // si le bouton a le droit d'etre bougé
+            if (std::find(_vectorBoutonsPossibles.begin(), _vectorBoutonsPossibles.end(), newButtonSender) != _vectorBoutonsPossibles.end())
+            {
+                echanger(newButtonSender, _positionTrou);      // changement de place du bouton et du trou
+
+                int x(_positionTrou->x());
+                int y(_positionTrou->y());
+
+
+                _vectorBoutonsPossibles.clear();
+
+                // ajout des boutons autour du nouveau trou dans le vector des boutons autorisés
+                if (x-1 >= 0)
+                {
+                    boutonStruct bouton1;
+                    bouton1.button = qobject_cast<QPushButton*>(_grille->itemAtPosition(x-1,y)->widget());
+                    _vectorBoutonsPossibles.push_back(bouton1);
+                }
+                if (x+1 <= _largeurGrille-1)
+                {
+                    boutonStruct bouton2;
+                    bouton2.button = qobject_cast<QPushButton*>(_grille->itemAtPosition(x+1,y)->widget());
+                    _vectorBoutonsPossibles.push_back(bouton2);
+                }
+                if (y-1 >= 0)
+                {
+                    boutonStruct bouton3;
+                    bouton3.button = qobject_cast<QPushButton*>(_grille->itemAtPosition(x,y-1)->widget());
+                    _vectorBoutonsPossibles.push_back(bouton3);
+                }
+                if (y+1 <= _largeurGrille-1)
+                {
+                    boutonStruct bouton4;
+                    bouton4.button = qobject_cast<QPushButton*>(_grille->itemAtPosition(x,y+1)->widget());
+                    _vectorBoutonsPossibles.push_back(bouton4);
+                }
+            }
+        }
+    }
+
+    void GameWidget::echanger(boutonStruct bouton, QPoint * trou)
+    {
+//        auto boutonItem = _grille->itemAtPosition(x,y);
+        int index = _grille->indexOf(bouton.button);
+        int row, column;
+        int _;
+        _grille->getItemPosition(index, &row, &column, &_, &_);
+        
+        _grille->removeWidget(bouton.button);
+        bouton.
+        _grille->addWidget(bouton,trou->x(), trou->y());
+
+        trou->setX(row);
+        trou->setY(column);
+    }
+
+//####################################################
+//                Changer arriere plan              //
+//####################################################
+
+    void GameWidget::chargerImage(QImage image)
+    {
+        int width = image.width() / _largeurGrille;
+        int height = image.height() / _largeurGrille;
+        for(auto bouton : _vectorBoutons)
+        {
+            int index = _grille->indexOf(bouton);
+            int row, column;
+            int _;
+            _grille->getItemPosition(index, &row, &column, &_, &_);
+
+            bouton->setIcon(QPixmap::fromImage(image.copy(column*width, row*height, width, height)));
+            bouton->setIconSize(QSize(100, 100));
+            bouton->setText("");
+        }
+    }
+    void GameWidget::setBackgroundOriginal()
+    {
+        for(int i(0); i<_vectorBoutons.size(); i++)
+        {
+            _vectorBoutons.at(i)->setText(QString::number(i+1));
+            _vectorBoutons.at(i)->setIcon(QIcon());
+        }
+    }
+    void GameWidget::setBackgroundForest()  { chargerImage(QImage("foret.jpg")); }
+    void GameWidget::setBackgroundTree()    { chargerImage(QImage("arbre.jpg")); }
+    void GameWidget::setBackgroundNetwork() { chargerImage(QImage("reseau.jpeg")); }
+
+
+
+
+
+
