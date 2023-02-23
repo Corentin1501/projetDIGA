@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <cstdlib>
 
 
 //####################################################
@@ -54,6 +55,38 @@
     GameWidget::~GameWidget() {}
 
 //####################################################
+//            Ajouter les boutons Possible          //
+//####################################################
+
+    void GameWidget::setBoutonsPossible()
+    {
+        int x(_positionTrou->x());
+        int y(_positionTrou->y());
+
+        // ajout des boutons autour du nouveau trou dans le vector des boutons autorisés
+        for(auto bouton : _vectorBoutons)
+        {
+            if((x-1 >= 0) && ((bouton->row == x-1) && (bouton->column == y)))
+            {
+                _vectorBoutonsPossibles.push_back(bouton);
+            }
+            if(((bouton->row == x+1) && (bouton->column == y))  && (x+1 <= _largeurGrille-1))
+            {
+                _vectorBoutonsPossibles.push_back(bouton);
+            }
+            if(((bouton->row == x) && (bouton->column == y-1))  && (y-1 >= 0))
+            {
+                _vectorBoutonsPossibles.push_back(bouton);
+            }
+            if(((bouton->row == x) && (bouton->column == y+1))  && (y+1 <= _largeurGrille-1))
+            {
+                _vectorBoutonsPossibles.push_back(bouton);
+            }
+        }
+    }
+
+
+//####################################################
 //            Creer gridlayout de boutons           //
 //####################################################
 
@@ -86,32 +119,30 @@
                                     .time_since_epoch()
                                     .count();
             std::shuffle (_vectorBoutons.begin(), _vectorBoutons.end(), std::default_random_engine(seed));
+
+            //Générer un trou aléatoire
+            int x = rand() % largeur;
+            int y = rand() % largeur;
+
+            _positionTrou->setX(x);
+            _positionTrou->setY(y);
         }
 
+
         int k (0);
-        //Générer un trou aléatoire
-
-//        std::srand(std::time(nullptr));
-//        int x = std::rand() % (largeur + 1);
-//        int y = std::rand() % (largeur + 1);
-//        _positionTrou->setX(x);
-//        _positionTrou->setY(y);
-
         for (int i = 0; i < largeur; ++i)
         {
             for (int j = 0; j < largeur; ++j)
             {
-                if((i+1)*(j+1) != largeur*largeur)  // pour ignorer la derniere case qui manque
+                if(!((i == _positionTrou->x()) && (j == _positionTrou->y()))) // ignorer le trou
                 {
                     _vectorBoutons[k]->row = i;
                     _vectorBoutons[k]->column = j;
-                    if(((i == largeur-2) && (j==largeur-1)) || ((i == largeur-1) && (j==largeur-2)))
-                        _vectorBoutonsPossibles.push_back(_vectorBoutons[k]);
-
                     grille->addWidget(_vectorBoutons[k++]->button, i, j);
                 }
             }
         }
+        setBoutonsPossible();
         return grille;
     }
 
@@ -151,29 +182,7 @@
 
                 if(!_victoire)  // et si on a pas gagné, on va rajouter des boutons dans la liste des boutons deplacables
                 {
-                    int x(_positionTrou->x());
-                    int y(_positionTrou->y());
-
-                    // ajout des boutons autour du nouveau trou dans le vector des boutons autorisés
-                    for(auto bouton : _vectorBoutons)
-                    {
-                        if((x-1 >= 0) && ((bouton->row == x-1) && (bouton->column == y)))
-                        {
-                            _vectorBoutonsPossibles.push_back(bouton);
-                        }
-                        if(((bouton->row == x+1) && (bouton->column == y))  && (x+1 <= _largeurGrille-1))
-                        {
-                            _vectorBoutonsPossibles.push_back(bouton);
-                        }
-                        if(((bouton->row == x) && (bouton->column == y-1))  && (y-1 >= 0))
-                        {
-                            _vectorBoutonsPossibles.push_back(bouton);
-                        }
-                        if(((bouton->row == x) && (bouton->column == y+1))  && (y+1 <= _largeurGrille-1))
-                        {
-                            _vectorBoutonsPossibles.push_back(bouton);
-                        }
-                    }
+                    setBoutonsPossible();
                 }
             }
         }

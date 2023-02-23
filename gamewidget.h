@@ -5,7 +5,6 @@
 
 
 #include "dialognewgame.h"
-//#include "mainwindow.h"
 
 using namespace std;
 
@@ -61,6 +60,8 @@ private:
     void afficherBoutonsPossibles();
 
     void verifierSiVictoire();
+
+    void setBoutonsPossible();
 
     int             _largeurGrille;
     QGridLayout*    _grille;
