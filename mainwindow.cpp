@@ -1,9 +1,9 @@
-#include "mainwindow.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QPixmap>
 #include <fstream>
 
+#include "mainwindow.h"
 
 //####################################################
 //            Constructeur / destructeur            //
@@ -16,35 +16,48 @@
         _loadGameButton(new QPushButton(tr("Load game"))),
         _saveGameButton(new QPushButton(tr("Save game"))),
         _moves(DEFAULT_MOVES),
-        _labelMoves(new QLabel(tr("Number of moves : ") + QString::number(_moves)))
+        _labelMoves(new QLabel)
 
     {
+        setWindowIcon(QIcon("240px-15-puzzle.png"));    // mettre l'icone de l'application
+
         createActions();
         createMenu();
         createToolBar();
+        updateMovesLabel();
 
         _GameWidget = new GameWidget(this, 3, _background);
         setCentralWidget(_GameWidget);
+
+        adjustSize();
+        this->show();
     }
 
     MainWindow::~MainWindow(){}
 
 //####################################################
-//               New / Load / Save Game             //
+//                      New Game                    //
 //####################################################
 
     void MainWindow::newGame()
     {
         DialogNewGame * dialog = new DialogNewGame();
-        auto ok = dialog->exec();
+        int ok = dialog->exec();
         if (ok)
         {
             _GameWidget->deleteLater();
-            _GameWidget = new GameWidget(this, dialog->getLargeur(), _background);
+            _GameWidget = new GameWidget(this, dialog->getLargeur(), _background, true);
             this->setCentralWidget(_GameWidget);
             adjustSize();
+
+            _moves = DEFAULT_MOVES;
+            updateMovesLabel();
         }
     }
+
+//####################################################
+//                     Load Game                    //
+//####################################################
 
     std::vector<std::string> split(std::string str, char del)
     {
@@ -64,84 +77,162 @@
 
     void MainWindow::loadGame()
     {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Load a game ..."), QString(), tr("Saves files (*.save)"));
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Load a new game ?"), tr("Abandon the current game to load a new one ?"),
+                                      QMessageBox::Yes|QMessageBox::No);
 
-        std::ifstream fichier(filename.toStdString());  //Ouverture d'un fichier en lecture
-
-        int largeurPuzzle;
-        int nombreCoupsJoues;
-        int row = 0, column = 0;
-        QPoint* trou = new QPoint;
-        QGridLayout* grille = new QGridLayout;
-        vector<QPushButton*> vectorBoutons;
-        vector<QPushButton*> vectorBoutonsPossibles;
-
-        if(fichier)
+        if(reply == QMessageBox::Yes)
         {
-            std::string ligne;
+            QString filename = QFileDialog::getOpenFileName(this, tr("Load a game ..."), "", tr("Saves files (*.save)"));
+            std::ifstream fichier(filename.toStdString());  //Ouverture d'un fichier en lecture
 
-            int ligneCourante = 0;
-            while(getline(fichier, ligne)) //Tant qu'on n'est pas à la fin, on lit
+            // déclarations de tous ce qu'on va charger
+                int largeurPuzzle, nombreCoupsJoues, column = 0;
+                QPoint* trou = new QPoint;
+                QGridLayout* grille = new QGridLayout;
+                vector<boutonStruct*> vectorBoutons, vectorBoutonsPossibles;
+
+            if(fichier)
             {
-                ligneCourante++;
+                std::string ligne;
+                int ligneCourante (0);
 
-                if(ligneCourante == 1)  // si c'est la premiere ligne, on recupere la taille du puzzle et le nombre de coups joués
+                while(getline(fichier, ligne)) //Tant qu'on n'est pas à la fin, on lit
                 {
-                    std::vector<std::string> data = split(ligne, ';');
-                    largeurPuzzle = stoi(data.at(0));
-                    nombreCoupsJoues = stoi(data.at(1));
+                    ligneCourante++;
+                    if(ligneCourante == 1)  // si c'est la premiere ligne, on recupere la taille du puzzle et le nombre de coups joués
+                    {
+                        std::vector<std::string> data = split(ligne, ' ');
+                        largeurPuzzle = stoi(data.at(0));
+                        nombreCoupsJoues = stoi(data.at(1));
+                    }
+                    else
+                    {
+                        std::vector<std::string> boutonsRow = split(ligne, ' ');
+                        column = 0;
+
+                        for(int i(0) ; i<largeurPuzzle ; i++)
+                        {
+                            int valeurDuBouton = stoi(boutonsRow[i]);
+
+                            if(valeurDuBouton == -1) // si ca correspond au trou
+                            {
+                                trou->setX(ligneCourante-2);
+                                trou->setY(column);
+                            }
+                            else // si ca correspond a un bouton
+                            {
+                                /* Selon les consignes, les boutons sont numérotés à partir de 0,
+                                 * mais dans le jeu sont numérotés à partir de 1.
+                                 * Je trouve ça plus logique de les sauvegarder tel quels,
+                                 * et non avec -1 sur toutes les valeurs de boutons.
+                                 * Mais s'il fallait absolument respecter les consignes il faut juste
+                                 * incrémenter "valeurDuBouton" avant de creer les boutons et la
+                                 * décrémenter lorsqu'on sauvegarde
+                                 */
+
+//                                valeurDuBouton++;
+
+                                boutonStruct* newBouton = new boutonStruct;
+                                    newBouton->button = new QPushButton(QString::number(valeurDuBouton));
+                                        newBouton->button->setStyleSheet(QString("background-color: midnightblue; font:Bold; font-size:20px;"));
+                                        newBouton->button->setMinimumSize(100,100);
+                                        newBouton->button->setDown(true);
+                                    newBouton->row = ligneCourante-2;
+                                    newBouton->column = column;
+                                    newBouton->valeurDuBouton = valeurDuBouton;
+
+                                grille->addWidget(newBouton->button, ligneCourante-2,column);
+                                vectorBoutons.push_back(newBouton);
+                            }
+                            column++;
+                        }
+                    }
                 }
-                else
-                {
-                   int valeurDuBouton = stoi(ligne);
+                // une fois le fichier lu en entier
 
-                   if(valeurDuBouton == -1) // si ca correspond au trou
-                   {
-                       trou->setX(column);
-                       trou->setY(row);
-                   }
-                   else // si ca correspond a un bouton
-                   {
-                       QPushButton* bouton = new QPushButton(QString::number(valeurDuBouton));
-                       grille->addWidget(bouton, row,column);
-                       connect(bouton, &QPushButton::clicked, _GameWidget, &GameWidget::boutonClique);
-                       bouton->setStyleSheet(QString("background-color: grey;"
-                                                     "font:Bold;"
-                                                     "font-size:20px;"));
-                       bouton->setMinimumSize(100,100);
-                       bouton->setDown(true);
+                // ajout des boutons deplacable dans vectorBoutonsPossibles
 
-                       vectorBoutons.insert(vectorBoutons.begin()+valeurDuBouton, bouton);
-                   }
+                    int x = trou->x();
+                    int y = trou->y();
+                    for(auto bouton : vectorBoutons)    // on verifie à chaque fois que ça ne sorte pas de la grille
+                    {
+                        if(((bouton->row == x-1) && (bouton->column == y)) && (x-1 >= 0))
+                            vectorBoutonsPossibles.push_back(bouton);
 
-                   if(column == largeurPuzzle-1)  //
-                   {
-                       row++;
-                       column=0;
-                   }
-                   else
-                       column++;
-                }
+                        if(((bouton->row == x+1) && (bouton->column == y))  && (x+1 <= largeurPuzzle-1))
+                            vectorBoutonsPossibles.push_back(bouton);
 
+                        if(((bouton->row == x) && (bouton->column == y-1))  && (y-1 >= 0))
+                            vectorBoutonsPossibles.push_back(bouton);
+
+                        if(((bouton->row == x) && (bouton->column == y+1))  && (y+1 <= largeurPuzzle-1))
+                            vectorBoutonsPossibles.push_back(bouton);
+                    }
+
+                _moves = nombreCoupsJoues-1;    // -1 parce que updateMovesLabel() l'incrémente
+                updateMovesLabel();
+
+                _GameWidget->deleteLater();
+                _GameWidget = new GameWidget(this,grille,largeurPuzzle,trou,vectorBoutons,vectorBoutonsPossibles,_background);
+                this->setCentralWidget(_GameWidget);
+                adjustSize();
             }
-            // une fois le fichier lu en entier
-            _GameWidget->deleteLater();
-            _GameWidget = new GameWidget(this,grille,largeurPuzzle,trou,vectorBoutons,vectorBoutonsPossibles,_background);
-            this->setCentralWidget(_GameWidget);
-            adjustSize();
+            else
+            {
+                std::cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << std::endl;
+            }
         }
+
+    }
+
+//####################################################
+//                     Save Game                    //
+//####################################################
+
+    void MainWindow::saveGame()
+    {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save the game ..."), "", tr("Saves files (*.save)"));
+
+        if (filename.isEmpty())  return; // si le nom du fichier est vide on arrete
         else
         {
-            std::cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << std::endl;
+           std::ofstream fichierSAVE;
+           fichierSAVE.open (filename.toStdString(), std::ofstream::out);
+
+           std::string fichierDeSauvegarde = "";
+           auto largeur = _GameWidget->getLargeur();
+           auto grille = _GameWidget->getGrille();
+           auto trou = _GameWidget->getTrou();
+           auto boutons = _GameWidget->getBoutons();
+           int valeurDuBouton;
+
+           fichierDeSauvegarde += std::to_string(largeur) + " " + std::to_string(_moves) + "\n"; // premiere ligne du fichier (taille coups)
+
+           for (int i = 0; i < largeur; ++i)
+           {
+               for (int j = 0; j < largeur; ++j)
+               {
+                   if (i == trou->x() && j == trou->y())    // si ca correspond au trou on met -1
+                       fichierDeSauvegarde += std::to_string(-1) + " ";
+                   else
+                   {
+                       auto boutonDansGrille = grille->itemAtPosition(i,j)->widget();  // on reconnais le bouton à l'emplacement (i,j)
+                       for(auto bouton : boutons)   // et on le recherche dans la liste des boutons pour avoir la valeur du bouton
+                       {
+                           if(boutonDansGrille == bouton->button)
+                               valeurDuBouton = bouton->valeurDuBouton;
+                       }
+                       fichierDeSauvegarde += std::to_string(valeurDuBouton) + " ";
+                   }
+               }
+               fichierDeSauvegarde += "\n"; // une fois qu'on a fais toute la ligne, on va à la ligne
+           }
+           fichierSAVE << fichierDeSauvegarde;  // on écrit dans le fichier
+
+           fichierSAVE.close();
         }
-
     }
-
-    void MainWindow::saveGame(){
-
-    }
-
-
 
 //####################################################
 //            creer les actions des menu            //
@@ -162,8 +253,7 @@
         connect(_saveGameAction, &QAction::triggered, this, &MainWindow::saveGame);
 
         _quitAction = new QAction(tr("Quit"), this);
-        _quitAction->setShortcut(Qt::Key_Q); // Quit = CTRL+Q
-        // Juste la touche Q pour l'instant, c'ets plus rapide (Mais sinon c'est QKeySequence::Quit)
+        _quitAction->setShortcut(QKeySequence::Quit); // Quit = CTRL+Q
         connect(_quitAction, &QAction::triggered, this, &QApplication::quit);
 
         _originalBackgroundAction = new QAction(tr("Original"), this);
@@ -200,7 +290,7 @@
         editMenu->addAction(_treeBackgroundAction);
         editMenu->addAction(_networkBackgroundAction);
 
-        QMenu *aboutMenu = menuBar()->addMenu(tr("About"));
+        QMenu *aboutMenu = menuBar()->addMenu(QIcon::fromTheme("help-browser"), "");
         aboutMenu->addAction(_aboutQt);
         aboutMenu->addAction(_aboutTaquin);
     }
@@ -214,7 +304,7 @@
         _toolBar = new QToolBar;
         addToolBar(Qt::RightToolBarArea,_toolBar);
         _toolBar->setMovable(false);
-        _toolBar->setAllowedAreas(Qt::RightToolBarArea);
+
         _toolBar->addWidget(_newGameButton);
         _toolBar->addWidget(_loadGameButton);
         _toolBar->addWidget(_saveGameButton);
@@ -231,14 +321,14 @@
     void MainWindow::aboutQt()
     {
         QMessageBox * message = new QMessageBox;
-        message->aboutQt(this,"About Qt");
+        message->aboutQt(this,tr("About Qt"));
     }
 
     void MainWindow::aboutTaquin()
     {
         QMessageBox * message = new QMessageBox;
-        message->setIconPixmap(QPixmap("240px-15-puzzle.png"));
-        message->about(this,"About Taquin", "This program was created by Corentin CUVELIER for the L3 IT's Qt project.");
+        message->setIcon(QMessageBox::Information);
+        message->about(this,tr("About Taquin"), tr("This program was created by Corentin CUVELIER for the L3 IT's Qt project."));
     }
 
 //####################################################

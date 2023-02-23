@@ -3,11 +3,13 @@
 #include <vector>
 #include <iostream>
 
+
 #include "dialognewgame.h"
+//#include "mainwindow.h"
 
 using namespace std;
 
-struct bouton {
+struct boutonStruct {
     QPushButton* button;
     int valeurDuBouton;
     int row;
@@ -18,33 +20,55 @@ class GameWidget : public QWidget
 {
     Q_OBJECT
 public:
-    GameWidget(QWidget *parent = nullptr, int largeur=3, std::string bg="original");
-    GameWidget(QWidget *parent,
+    // constructeur quand on fait "new game" ou à la création de la fenetre
+    GameWidget(QMainWindow *parent = nullptr, int largeur=3, std::string bg="original", bool random=false);
+    // constructeur quand on charge une partie
+    GameWidget(QMainWindow *parent,
                QGridLayout* grille,
                int largeur,
                QPoint* trou,
-               vector<QPushButton*> boutons,
-               vector<QPushButton*> boutonsPossibles,
+               vector<boutonStruct*> boutons,
+               vector<boutonStruct*> boutonsPossibles,
                std::string bg);
+
     ~GameWidget();
 
+    // accesseurs
+                      int getLargeur()  const { return _largeurGrille; }
+                     bool getVictoire() const { return _victoire;      }
+                  QPoint* getTrou()     const { return _positionTrou;  }
+             QGridLayout* getGrille()   const { return _grille;        }
+    vector<boutonStruct*> getBoutons()  const { return _vectorBoutons; }
+
+
+
 public slots:
-    void setBackgroundOriginal();
-    void setBackgroundForest();
-    void setBackgroundTree();
-    void setBackgroundNetwork();
-    void boutonClique(bool);
+    //### Background ###
+        void setBackgroundOriginal();
+        void setBackgroundForest();
+        void setBackgroundTree();
+        void setBackgroundNetwork();
+
+    //### Clic des boutons ###
+        void boutonClique(bool);
 
 private:
-    QGridLayout * creerGrille(int largeur);
-    void echanger(QPushButton * bouton, QPoint * trou);
+    QGridLayout * creerGrille(int largeur, bool random);
+    void bouger(boutonStruct* bouton);
     void chargerImage(QImage image);
 
-    std::string     _background;
+    void afficherBoutons();
+    void afficherBoutonsPossibles();
+
+    void verifierSiVictoire();
+
     int             _largeurGrille;
     QGridLayout*    _grille;
+    std::string     _background;
 
-    vector<QPushButton*> _vectorBoutons;
-    vector<QPushButton*> _vectorBoutonsPossibles;
+    vector<boutonStruct *> _vectorBoutons;
+    vector<boutonStruct *> _vectorBoutonsPossibles;
     QPoint* _positionTrou;
+
+    bool _victoire;
 };

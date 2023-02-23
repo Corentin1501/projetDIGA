@@ -8,7 +8,7 @@ DialogNewGame::DialogNewGame(QWidget *parent) :
     ui->setupUi(this);
     ui->spinBox->setValue(3);
     ui->spinBox->setMinimum(2);
-    ui->spinBox->setMaximum(10);
+    ui->spinBox->setMaximum(9);
 }
 
 DialogNewGame::~DialogNewGame()

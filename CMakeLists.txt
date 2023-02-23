@@ -13,7 +13,7 @@ find_package(Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 #find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 # Si traductions :
-set(TS_FILES tp1_english.ts tp1_french.ts)
+set(TS_FILES Taquin_french.ts)
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 add_executable(${PROJECT_NAME}
@@ -29,7 +29,6 @@ add_executable(${PROJECT_NAME}
     dialognewgame.cpp
     dialognewgame.h
     dialognewgame.ui
-
 
 # si ressources :
 #    tp1.qrc

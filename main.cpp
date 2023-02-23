@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QTranslator translator;
-    if(translator.load(QLocale::system(), "Game", "_", a.applicationDirPath(), ".qm")) {
+    if(translator.load(QApplication::applicationDirPath()+"/Taquin_french.qm")) {
         a.installTranslator(&translator);
     }
 

@@ -3,7 +3,6 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QtWidgets>
-#include <QLayout>
 
 #include "gamewidget.h"
 #include "dialognewgame.h"
@@ -15,6 +14,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    // accesseurs pour l'affichage du message de victoire
+    int getMoves() const { return _moves; }
 
 public slots:
     void newGame();
@@ -29,8 +31,10 @@ public slots:
     void setBackgroundTree();
     void setBackgroundNetwork();
 
+    void updateMovesLabel(){ _labelMoves->setText(tr("Number of moves : ") + QString::number(++_moves)); }
+
 private:
-    static const int DEFAULT_MOVES = 0;
+    static const int DEFAULT_MOVES = -1;
 
     void createActions();
     void createMenu();
