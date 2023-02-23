@@ -17,17 +17,17 @@
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gamewidget.cpp" line="255"/>
+        <location filename="gamewidget.cpp" line="253"/>
         <source>End !</source>
         <translation>Fin !</translation>
     </message>
     <message>
-        <location filename="gamewidget.cpp" line="255"/>
+        <location filename="gamewidget.cpp" line="253"/>
         <source>Congratulations, you won in </source>
         <translation>Félicitations, vous avez gagné en </translation>
     </message>
     <message>
-        <location filename="gamewidget.cpp" line="255"/>
+        <location filename="gamewidget.cpp" line="253"/>
         <source> moves !</source>
         <translation> coups !</translation>
     </message>

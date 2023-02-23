@@ -250,9 +250,7 @@
             MainWindow* mainWindow = qobject_cast<MainWindow*>(parentWidget()); // Récupération de la fenêtre principale
             int moves = mainWindow->getMoves(); // Récupération du nombre de coups joués
 
-            QMessageBox * messageVictoire = new QMessageBox;
-            messageVictoire->setIcon(QMessageBox::Information);
-            messageVictoire->about(this,tr("End !"), tr("Congratulations, you won in ") + QString::number(moves) + tr(" moves !"));
+            QMessageBox::information(nullptr, tr("End !"), tr("Congratulations, you won in ") + QString::number(moves) + tr(" moves !"));
 
             _victoire = true;
         }
