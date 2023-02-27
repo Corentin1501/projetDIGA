@@ -17,6 +17,7 @@ public:
 
     // accesseurs pour l'affichage du message de victoire
     int getMoves() const { return _moves; }
+    void setLabelImpossible(bool possible);
 
 public slots:
     void newGame();
@@ -39,6 +40,7 @@ private:
     void createActions();
     void createMenu();
     void createToolBar();
+
 
     //### Actions ###
         QAction *_newGameAction;
@@ -64,6 +66,7 @@ private:
         QPushButton* _saveGameButton;
         int _moves;
         QLabel * _labelMoves;
+        QLabel * _labelImpossible;
 
         QToolBar* _toolBar;
 

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR" sourcelanguage="en">
+<TS version="2.1">
 <context>
     <name>DialogNewGame</name>
     <message>
         <location filename="dialognewgame.ui" line="14"/>
-        <source>Start a new game ?</source>
-        <translation>Commencer une nouvelle partie ?</translation>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dialognewgame.ui" line="22"/>
         <source>Taquin&apos;s size : </source>
-        <translation>Taille du Taquin : </translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GameWidget</name>
     <message>
-        <location filename="gamewidget.cpp" line="253"/>
+        <location filename="gamewidget.cpp" line="255"/>
         <source>End !</source>
-        <translation>Fin !</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gamewidget.cpp" line="253"/>
+        <location filename="gamewidget.cpp" line="255"/>
         <source>Congratulations, you won in </source>
-        <translation>Félicitations, vous avez gagné en </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gamewidget.cpp" line="253"/>
+        <location filename="gamewidget.cpp" line="255"/>
         <source> moves !</source>
-        <translation> coups !</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37,119 +37,115 @@
     <message>
         <location filename="mainwindow.cpp" line="15"/>
         <source>New game</source>
-        <translation>Nouvelle Partie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="16"/>
         <source>Load game</source>
-        <translation>Charger une partie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="17"/>
         <source>Save game</source>
-        <translation>Sauvegarder une partie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.h" line="34"/>
-        <source>Number of moves : </source>
-        <translation>Nombre de coups : </translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="81"/>
+        <location filename="mainwindow.cpp" line="82"/>
         <source>Load a new game ?</source>
-        <translation>Charger une nouvelle partie ?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="81"/>
+        <location filename="mainwindow.cpp" line="82"/>
         <source>Abandon the current game to load a new one ?</source>
-        <translation>Abandonner la partie actuelle pour en charger une nouvelle ?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="86"/>
+        <location filename="mainwindow.cpp" line="87"/>
         <source>Load a game ...</source>
-        <translation>Charger une partie ...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="86"/>
-        <location filename="mainwindow.cpp" line="195"/>
+        <location filename="mainwindow.cpp" line="87"/>
+        <location filename="mainwindow.cpp" line="196"/>
         <source>Saves files (*.save)</source>
-        <translation>Fichier de sauvegardes (*.save)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="195"/>
+        <location filename="mainwindow.cpp" line="196"/>
         <source>Save the game ...</source>
-        <translation>Sauvegarder la partie ...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="243"/>
+        <location filename="mainwindow.cpp" line="244"/>
         <source>New Game</source>
-        <translation>Nouvelle partie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="247"/>
+        <location filename="mainwindow.cpp" line="248"/>
         <source>Load</source>
-        <translation>Charger</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="251"/>
+        <location filename="mainwindow.cpp" line="252"/>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="255"/>
+        <location filename="mainwindow.cpp" line="256"/>
         <source>Quit</source>
-        <translation>Quitter</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="259"/>
-        <source>Original</source>
-        <translation>Original</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="260"/>
-        <source>Forest</source>
-        <translation>Forêt</translation>
+        <source>Original</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="261"/>
-        <source>Tree</source>
-        <translation>Arbre</translation>
+        <source>Forest</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="262"/>
-        <source>Network</source>
-        <translation>Réseau</translation>
+        <source>Tree</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="268"/>
-        <location filename="mainwindow.cpp" line="324"/>
-        <source>About Qt</source>
-        <translation>À propos de Qt</translation>
+        <location filename="mainwindow.cpp" line="263"/>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="269"/>
-        <location filename="mainwindow.cpp" line="331"/>
+        <location filename="mainwindow.cpp" line="339"/>
+        <source>About Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="270"/>
+        <location filename="mainwindow.cpp" line="346"/>
         <source>About Taquin</source>
-        <translation>À propos de Taquin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="280"/>
+        <location filename="mainwindow.cpp" line="281"/>
         <source>File</source>
-        <translation>Fichier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="287"/>
+        <location filename="mainwindow.cpp" line="288"/>
         <source>Background</source>
-        <translation>Fond</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>About</source>
-        <translation type="vanished">À propos</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="331"/>
+        <location filename="mainwindow.cpp" line="346"/>
         <source>This program was created by Corentin CUVELIER for the L3 IT&apos;s Qt project.</source>
-        <translation>Cette application a été créée par Corentin CUVELIER pour le projet Qt de L3 Informatique.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.h" line="35"/>
+        <source>Number of moves : </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

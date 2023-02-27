@@ -60,6 +60,8 @@ private:
     void afficherBoutonsPossibles();
 
     void verifierSiVictoire();
+    void verifierSiPossible();
+    bool bouton1_Avant_Bouton2(boutonStruct* bouton1, boutonStruct* bouton2);
 
     void setBoutonsPossible();
 

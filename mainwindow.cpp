@@ -16,7 +16,8 @@
         _loadGameButton(new QPushButton(tr("Load game"))),
         _saveGameButton(new QPushButton(tr("Save game"))),
         _moves(DEFAULT_MOVES),
-        _labelMoves(new QLabel)
+        _labelMoves(new QLabel),
+        _labelImpossible(new QLabel("Taquin possible ?"))
 
     {
         setWindowIcon(QIcon("240px-15-puzzle.png"));    // mettre l'icone de l'application
@@ -309,9 +310,23 @@
         _toolBar->addWidget(_loadGameButton);
         _toolBar->addWidget(_saveGameButton);
         _toolBar->addWidget(_labelMoves);
+        _toolBar->addSeparator();
+        _toolBar->addWidget(_labelImpossible);
         connect(_newGameButton, &QPushButton::clicked, this, &MainWindow::newGame);
         connect(_loadGameButton, &QPushButton::clicked, this, &MainWindow::loadGame);
         connect(_saveGameButton, &QPushButton::clicked, this, &MainWindow::saveGame);
+    }
+
+    void MainWindow::setLabelImpossible(bool possible)
+    {
+        if(possible){
+            _labelImpossible->setText("Taquin POSSIBLE");
+            _labelImpossible->setStyleSheet("color: green; font-weight: bold;");
+        }
+        else{
+            _labelImpossible->setText("Taquin IMPOSSIBLE");
+            _labelImpossible->setStyleSheet("color: red; font-weight: bold;");
+        }
     }
 
 //####################################################

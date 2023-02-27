@@ -26,6 +26,7 @@
         else setBackgroundOriginal();
 
         this->setLayout(_grille);
+        verifierSiPossible();
     }
 
     GameWidget::GameWidget(QMainWindow *parent, QGridLayout* grille, int largeur, QPoint* trou,
@@ -50,6 +51,7 @@
         else setBackgroundOriginal(); // si c'est n'importe quoi d'autre, on met l'original
 
         this->setLayout(_grille);
+        verifierSiPossible();
     }
 
     GameWidget::~GameWidget() {}
@@ -254,8 +256,63 @@
 
             _victoire = true;
         }
+    }
+
+//####################################################
+//         Verifier si Taquin est Possible          //
+//####################################################
+
+    bool GameWidget::bouton1_Avant_Bouton2(boutonStruct* bouton1, boutonStruct* bouton2)
+    {
+        int x1,y1, x2,y2;
+        for (int i = 0; i < _largeurGrille; ++i)
+        {
+            for (int j = 0; j < _largeurGrille; ++j)
+            {
+                if(!((i == _positionTrou->x()) && (j == _positionTrou->y()))) // on ignore le trou
+                {
+                    auto boutonDansGrille = _grille->itemAtPosition(i,j)->widget();  // on reconnais le bouton à l'emplacement (i,j)
+                    if (boutonDansGrille == bouton1->button){
+                        x1 = i;
+                        y1 = j;
+                    }
+                    else if (boutonDansGrille == bouton2->button){
+                        x2 = i;
+                        y2 = j;
+                    }
+                }
+            }
+        }
+
+        int placeBouton1 = x1 * _largeurGrille + y1;
+        int placeBouton2 = x2 * _largeurGrille + y2;
+
+        return placeBouton1 < placeBouton2;
+    }
+
+    void GameWidget::verifierSiPossible()
+    {
+        boutonStruct* boutonPaire1 = new boutonStruct;
+        boutonStruct* boutonPaire2 = new boutonStruct;
+        int tauxDeMelange(0);
+        for(int i(1) ; i < (_largeurGrille*_largeurGrille)-1 ; i++)
+        {
+            for(auto bouton : _vectorBoutons)
+                if(bouton->valeurDuBouton == i)
+                    boutonPaire1 = bouton;
+
+            for(int j(i+1) ; j < (_largeurGrille*_largeurGrille) ; j++)
+            {
+                for(auto bouton : _vectorBoutons)
+                    if(bouton->valeurDuBouton == j)
+                        boutonPaire2 = bouton;
 
 
+                if(! bouton1_Avant_Bouton2(boutonPaire1,boutonPaire2)) tauxDeMelange++;
+            }
+        }
+        MainWindow* mainWindow = qobject_cast<MainWindow*>(parentWidget()); // Récupération de la fenêtre principale
+        mainWindow->setLabelImpossible((tauxDeMelange % 2 == 0));
     }
 
 //####################################################
